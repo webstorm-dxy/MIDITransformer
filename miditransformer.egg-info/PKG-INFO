@@ -1,0 +1,129 @@
+Metadata-Version: 2.4
+Name: miditransformer
+Version: 0.1.0
+Summary: A Transformer-based MIDI music generation model
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+Requires-Dist: mido>=1.2.0
+Requires-Dist: pretty-midi>=0.2.0
+Requires-Dist: torch>=2.7.0
+Requires-Dist: torchvision>=0.22.0
+Requires-Dist: numpy>=1.20.0
+Requires-Dist: tensorboard>=2.0.0
+Requires-Dist: midiutil>=1.0.0
+Requires-Dist: music21>=5.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=6.0.0; extra == "dev"
+
+# MIDI Transformer
+
+一个基于Transformer架构的MIDI音乐生成模型。该项目使用深度学习技术来学习和生成音乐序列，能够预测音高、持续时间和力度等MIDI参数。
+
+## 项目介绍
+
+MIDI Transformer是一个使用Transformer解码器架构训练的音乐生成模型。它能够学习MIDI音乐的模式和结构，并生成新的音乐片段。模型通过分析音符序列来学习音乐理论，包括旋律、和声和节奏等元素。
+
+## 项目结构
+
+```
+MIDITransformer/
+├── data/                 # 训练数据（JSON格式）
+├── data_pre/             # 数据预处理脚本
+├── model/                # 模型定义和训练代码
+├── pth/                  # 训练好的模型权重文件
+├── runs/                 # TensorBoard日志文件
+├── generated_midi.json   # 生成的MIDI数据
+├── output.json           # 输出结果
+└── README.md             # 项目说明文档
+```
+
+## 功能特点
+
+- 基于Transformer解码器架构的音乐生成模型
+- 支持多参数预测：音高(pitch)、持续时间(duration)、力度(velocity)
+- 数据预处理和清洗功能
+- 模型训练和推理功能
+- 支持分布式训练
+- 使用TensorBoard进行训练过程可视化
+- 生成MIDI文件功能
+
+## 环境依赖
+
+- Python 3.7+
+- PyTorch 1.8+
+- NumPy
+- TensorBoard
+- midiutil (可选，用于生成MIDI文件)
+
+安装依赖：
+```bash
+pip install torch numpy tensorboard midiutil
+```
+
+## 数据格式
+
+训练数据使用JSON格式存储，每个音符包含以下字段：
+- `pitch`: 音高 (0-127)
+- `duration`: 持续时间
+- `velocity`: 力度 (0-127)
+- `start_time`: 开始时间
+
+## 模型架构
+
+模型主要由以下组件构成：
+
+1. **MIDIEmbedding**: 将MIDI参数(音高、持续时间、力度)嵌入到向量空间
+2. **Decoder**: 基于Transformer的解码器层，包含多头自注意力机制
+3. **预测头**: 三个独立的线性层，分别预测音高、持续时间和力度
+
+超参数：
+- pitch_range: 128 (MIDI音符范围)
+- embed_dim: 256 (嵌入维度)
+- num_heads: 16 (多头注意力头数)
+- num_layers: 8 (Transformer层数)
+- sequence_length: 256 (序列长度)
+
+## 使用方法
+
+### 训练模型
+
+```bash
+python model/train.py
+```
+
+训练脚本会自动检测可用的GPU资源，支持单GPU和多GPU分布式训练。
+
+### 生成音乐
+
+```bash
+python model/inference.py
+```
+
+使用训练好的模型生成新的音乐序列。
+
+## 训练细节
+
+- 模型使用序列到序列的预测方式，通过前面的音符预测下一个音符
+- 使用交叉熵损失函数训练音高预测，均方误差损失函数训练持续时间和力度预测
+- 采用梯度裁剪和数值稳定性检查来提高训练稳定性
+- 使用TensorBoard记录训练过程中的损失变化
+
+## 注意事项
+
+1. 确保训练数据格式正确
+2. 根据硬件配置调整batch_size和sequence_length
+3. 训练时间较长，建议使用GPU加速
+4. 模型效果依赖于训练数据的质量和数量
+
+## 项目文件说明
+
+- [model/train.py](file:///C:/Users/daxingyi/PycharmProjects/MIDITransformer/model/train.py): 模型训练主脚本
+- [model/inference.py](file:///C:/Users/daxingyi/PycharmProjects/MIDITransformer/model/inference.py): 模型推理脚本
+- [model/transformer.py](file:///C:/Users/daxingyi/PycharmProjects/MIDITransformer/model/transformer.py): Transformer模型定义
+- [model/embedding.py](file:///C:/Users/daxingyi/PycharmProjects/MIDITransformer/model/embedding.py): MIDI嵌入层定义
+- [model/dataset.py](file:///C:/Users/daxingyi/PycharmProjects/MIDITransformer/model/dataset.py): 数据集处理类
+- [data_pre/](file:///C:/Users/daxingyi/PycharmProjects/MIDITransformer/data_pre/): 数据预处理脚本目录
+
+## 许可证
+
+本项目仅供学习和研究使用。

@@ -1,0 +1,7 @@
+/.venv/
+/data/*
+
+/splited_midi/*
+/runs/*
+/pth/*
+/midi/*
