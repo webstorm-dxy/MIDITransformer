@@ -40,7 +40,7 @@ MIDITransformer/
 
 安装依赖：
 ```bash
-pip install torch numpy tensorboard midiutil
+uv sync
 ```
 
 ## 数据格式
@@ -110,3 +110,5 @@ python model/inference.py
 ## 许可证
 
 本项目仅供学习和研究使用。
+
+部分代码由Qwen-code LLM提供，请勿用于商业用途。
